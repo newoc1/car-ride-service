@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+	typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+	targetNamespace="http://www.activiti.org/processdef">
+	<process id="car_ride" isExecutable="true">
+		<startEvent id="start"></startEvent>
+		<receiveTask id="pickup_request" name="Pickup Request"></receiveTask>
+		<serviceTask id="check_fleet_availability" name="Check fleet 
+availability
+" activiti:class="com.grok.crs.delegates.CheckFleetAvailability"></serviceTask>
+		<exclusiveGateway id="xor"></exclusiveGateway>
+		<serviceTask id="send_car" name="Send Car" activiti:class="com.grok.crs.delegates.SendCar"></serviceTask>
+		<receiveTask id="car_pickup" name="Car Pickup"></receiveTask>
+		<receiveTask id="car_drop_off" name="Car Drop Off"></receiveTask>
+		<serviceTask id="relocate_to_charge_point" name="Relocate to charge point" activiti:class="com.grok.crs.delegates.RelocateToChargePoint"></serviceTask>
+		<sequenceFlow id="start_to_pickup_request" name="start_to_pickup_request"
+			sourceRef="start" targetRef="pickup_request"></sequenceFlow>
+		<sequenceFlow id="pickup_request_to_check_fleet_availability"
+			name="pickup_request_to_check_fleet_availability" sourceRef="pickup_request"
+			targetRef="check_fleet_availability"></sequenceFlow>
+		<sequenceFlow id="check_fleet_availability_to_xor" name="check_fleet_availability_to_xor"
+			sourceRef="check_fleet_availability" targetRef="xor"></sequenceFlow>
+		<sequenceFlow id="xor_to_send_car" name="xor_to_send_car"
+			sourceRef="xor" targetRef="send_car">
+			<conditionExpression xsi:type="tFormalExpression"><![CDATA[${isCarAvailable}]]></conditionExpression>
+		</sequenceFlow>
+		<sequenceFlow id="send_car_to_car_pickup" name="send_car_to_car_pickup"
+			sourceRef="send_car" targetRef="car_pickup"></sequenceFlow>
+		<sequenceFlow id="car_drop_off_to_relocate_to_charge_point"
+			name="car_drop_off_to_relocate_to_charge_point" sourceRef="car_drop_off"
+			targetRef="relocate_to_charge_point"></sequenceFlow>
+		<sequenceFlow id="car_pickup_to_car_drop_off" name="car_pickup_to_car_drop_off"
+			sourceRef="car_pickup" targetRef="car_drop_off"></sequenceFlow>
+		<endEvent id="end"></endEvent>
+		<sequenceFlow id="relocate_to_charge_point_to_end" name="relocate_to_charge_point_to_end"
+			sourceRef="relocate_to_charge_point" targetRef="end"></sequenceFlow>
+		<sequenceFlow id="xor_to_pickup_request" name="xor_to_pickup_request"
+			sourceRef="xor" targetRef="pickup_request">
+			<conditionExpression xsi:type="tFormalExpression"><![CDATA[${!isCarAvailable}]]></conditionExpression>
+		</sequenceFlow>
+	</process>
+	<bpmndi:BPMNDiagram id="BPMNDiagram_car_ride">
+		<bpmndi:BPMNPlane bpmnElement="car_ride" id="BPMNPlane_car_ride">
+			<bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+				<omgdc:Bounds height="30.0" width="30.0" x="30.0" y="300.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="pickup_request"
+				id="BPMNShape_pickup_request">
+				<omgdc:Bounds height="80.0" width="100.0" x="120.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="check_fleet_availability"
+				id="BPMNShape_check_fleet_availability">
+				<omgdc:Bounds height="80.0" width="100.0" x="300.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="xor" id="BPMNShape_xor">
+				<omgdc:Bounds height="40.0" width="40.0" x="450.0" y="295.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="send_car" id="BPMNShape_send_car">
+				<omgdc:Bounds height="80.0" width="100.0" x="555.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="car_pickup" id="BPMNShape_car_pickup">
+				<omgdc:Bounds height="80.0" width="100.0" x="720.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="car_drop_off"
+				id="BPMNShape_car_drop_off">
+				<omgdc:Bounds height="80.0" width="100.0" x="870.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="relocate_to_charge_point"
+				id="BPMNShape_relocate_to_charge_point">
+				<omgdc:Bounds height="80.0" width="100.0" x="1020.0" y="275.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+				<omgdc:Bounds height="28.0" width="28.0" x="1213.2999877929688"
+					y="304.0"></omgdc:Bounds>
+			</bpmndi:BPMNShape>
+			<bpmndi:BPMNEdge bpmnElement="start_to_pickup_request"
+				id="BPMNEdge_1">
+				<omgdi:waypoint x="60.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="120.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="pickup_request_to_check_fleet_availability"
+				id="BPMNEdge_2">
+				<omgdi:waypoint x="220.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="300.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="check_fleet_availability_to_xor"
+				id="BPMNEdge_3">
+				<omgdi:waypoint x="400.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="450.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="xor_to_send_car" id="BPMNEdge_4">
+				<omgdi:waypoint x="458.0310246687059" y="306.9689753312941"></omgdi:waypoint>
+				<omgdi:waypoint x="297.29998779296875" y="197.0"></omgdi:waypoint>
+				<omgdi:waypoint x="171.6113922505439" y="275.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="send_car_to_car_pickup"
+				id="BPMNEdge_5">
+				<omgdi:waypoint x="489.57089552238807" y="315.42910447761193"></omgdi:waypoint>
+				<omgdi:waypoint x="555.0" y="315.18587360594796"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="car_drop_off_to_relocate_to_charge_point"
+				id="BPMNEdge_6">
+				<omgdi:waypoint x="655.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="720.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="relocate_to_charge_point_to_end"
+				id="BPMNEdge_7">
+				<omgdi:waypoint x="820.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="870.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="car_pickup_to_car_drop_off"
+				id="BPMNEdge_8">
+				<omgdi:waypoint x="970.0" y="315.0"></omgdi:waypoint>
+				<omgdi:waypoint x="1020.0" y="315.0"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+			<bpmndi:BPMNEdge bpmnElement="xor_to_pickup_request"
+				id="BPMNEdge_9">
+				<omgdi:waypoint x="1120.0" y="315.95359193668486"></omgdi:waypoint>
+				<omgdi:waypoint x="1213.3025332438162" y="317.7330428041563"></omgdi:waypoint>
+			</bpmndi:BPMNEdge>
+		</bpmndi:BPMNPlane>
+	</bpmndi:BPMNDiagram>
+</definitions>
