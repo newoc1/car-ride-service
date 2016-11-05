@@ -1,24 +1,48 @@
 package com.grok.crs;
 
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.apache.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
 public class App {
+
+	private Logger LOGGER = Logger.getLogger(App.class);
 	
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(App.class, args);
+	}
+
+	@Conditional(value = DefaultGeolocationServiceCondition.class)
+	@Bean
+	public GeolocationService geolocationService() {
+		LOGGER.info("Using Default geolocation service");
+		return new DefaultGeolocationService();
+	}
+	
+	@Bean
+	public CarService carService(){
+		return new DefaultCarService();
 	}
 
 	@Bean
@@ -35,5 +59,34 @@ public class App {
 				System.out.println("Number of tasks after process start: " + taskService.createTaskQuery().count());
 			}
 		};
+	}
+
+	@Bean
+	public DataSource dataSource() {
+		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+		return builder.setType(EmbeddedDatabaseType.H2).build();
+	}
+
+	@Bean
+	public EntityManagerFactory entityManagerFactory() {
+
+		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+		vendorAdapter.setGenerateDdl(true);
+
+		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+		factory.setJpaVendorAdapter(vendorAdapter);
+		factory.setPackagesToScan("com.grok.crs");
+		factory.setDataSource(dataSource());
+		factory.afterPropertiesSet();
+
+		return factory.getObject();
+	}
+
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+
+		JpaTransactionManager txManager = new JpaTransactionManager();
+		txManager.setEntityManagerFactory(entityManagerFactory());
+		return txManager;
 	}
 }
