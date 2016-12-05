@@ -1,0 +1,7 @@
+body {
+    background: rgb(15, 59, 40);
+    visibility:hidden;
+}
+#app {
+  visibility: visible;
+}

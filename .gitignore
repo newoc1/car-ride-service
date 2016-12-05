@@ -3,6 +3,10 @@
 .project
 .settings/
 
+#front-end
+node_modules
+dist
+
 # Intellij
 .idea/
 *.iml
