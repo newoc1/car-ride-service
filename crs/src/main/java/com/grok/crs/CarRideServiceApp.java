@@ -3,10 +3,10 @@ package com.grok.crs;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.apache.log4j.Logger;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -25,12 +25,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-public class App {
+public class CarRideServiceApp {
 
-	private Logger LOGGER = Logger.getLogger(App.class);
+	private Logger LOGGER = Logger.getLogger(CarRideServiceApp.class);
 	
 	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(App.class, args);
+		ApplicationContext ctx = SpringApplication.run(CarRideServiceApp.class, args);
 	}
 
 	@Conditional(value = DefaultGeolocationServiceCondition.class)

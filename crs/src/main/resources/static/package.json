@@ -5,9 +5,18 @@
   "main": "content.js",
   "dependencies": {
     "css-loader": "^0.26.1",
-    "style-loader": "^0.13.1"
+    "react": "^15.4.2",
+    "react-redux": "^5.0.2",
+    "redux": "^3.6.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^2.2.1",
+    "whatwg-fetch": "^2.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "react": "^15.4.2",
+    "redux-devtools": "^3.3.2",
+    "webpack-dev-server": "^2.3.0"
+  },
   "scripts": {
     "start": "webpack-dev-server --progress --color",
     "test": "test"

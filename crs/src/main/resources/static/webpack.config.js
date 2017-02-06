@@ -4,19 +4,34 @@ module.exports = {
     path: __dirname,
     filename: "dist/bundle.js"
   },
-  debug: true,
   devtool: "#eval-source-map",
   devServer: {
+    proxy: {
+      "/api": {
+        target:  "http://localhost:8888",
+        ignorePath: false,
+        changeOrigin: true,
+        secure: false
+      }
+    },
     inline: true
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.css$/,
-      loader: "style!css"
+      use: [
+          {loader:'style-loader'},
+          {
+            loader:'css-loader',
+            options: {
+              modules: true
+            }
+          }
+      ]
     }, {
       test: /\.js$/,
       exclude: /node_modules/,
-      loader: "babel-loader"
+      use: "babel-loader"
     }]
   }
 };
